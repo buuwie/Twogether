@@ -2,6 +2,7 @@ import express from "express"
 import authRoutes from "./routes/auth.route.js"
 import mongoose from "mongoose"
 import dotenv from "dotenv"
+import cookieParser from "cookie-parser"
 
 dotenv.config();
 
@@ -17,7 +18,11 @@ const connectDB = async () => {
     }
 }
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true}));
+app.use(cookieParser());
 
 connectDB();
 
