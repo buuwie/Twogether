@@ -9,21 +9,21 @@ export const signup = async (req, res, next) => {
 
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
-			return next(errorHandler(400, 'Vui lòng nhập đúng định dạng Email'));
+			return res.status(400).json({ error: 'Vui lòng nhập đúng định dạng Email' });
 		}
 
 		const existingUser = await User.findOne({ username });
 		if (existingUser) {
-			return next(errorHandler(400, 'Tên người dùng này đã được sử dụng'));
+			return res.status(400).json({ error: 'Tên người dùng này đã được sử dụng'});
 		}
 
 		const existingEmail = await User.findOne({ email });
 		if (existingEmail) {
-			return next(errorHandler(400, 'Email này đã được sử dụng'));
+			return res.status(400).json({ error: 'Email này đã được sử dụng'});
 		}
 
 		if (password.length < 6) {
-			return next(errorHandler(400, 'Mật khẩu phải có ít nhất 6 kí tự'));
+			return res.status(400).json({ error: 'Mật khẩu phải có ít nhất 6 kí tự'});
 		}
 
 		const salt = await bcrypt.genSalt(10);
@@ -51,7 +51,7 @@ export const signup = async (req, res, next) => {
 				coverImg: newUser.coverImg,
 			});
 		} else {
-			next(errorHandler(400, 'Invalid user data'));
+			res.status(400).json({ error: "Invalid user data" });
 		}
 	} catch (error) {
 		console.log("Error in signup controller:", error.message);
@@ -66,7 +66,7 @@ export const login = async (req, res, next) => {
 		const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
 
 		if (!user || !isPasswordCorrect) {
-			return next(errorHandler(400, 'Tên người dùng hoặc mật khẩu không đúng'));
+			return res.status(400).json({ error: 'Tên người dùng hoặc mật khẩu không đúng'});
 		}
 
 		generateTokenAndSetCookie(user._id, res);

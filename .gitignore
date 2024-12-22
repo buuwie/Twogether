@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 .env
+/client/src/assets/images/
+/client/public/
